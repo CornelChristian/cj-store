@@ -11,7 +11,7 @@ const PORT = process.env.NODE_ENV === "development" ? 5000 : process.env.PORT ||
 
 // Enable CORS for specific origins
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://cj-store.vercel.app/'], // Allow both local dev and production frontend origins
+  origin: ['http://localhost:5173', 'https://cj-store.vercel.app'], // Allow both local dev and production frontend origins
   methods: "GET, POST, PUT, DELETE", // Allowed HTTP methods
 }));
 
