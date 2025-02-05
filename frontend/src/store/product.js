@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+const API_BASE_URL = "https://cj-store-api.vercel.app/api/products";
+
 export const useProductStore = create((set) => ({
 	products: [],
 	setProducts: (products) => set({ products }),
@@ -7,7 +9,7 @@ export const useProductStore = create((set) => ({
 		if (!newProduct.name || !newProduct.image || !newProduct.price) {
 			return { success: false, message: "Please fill in all fields." };
 		}
-		const res = await fetch("/api/products", {
+		const res = await fetch(`${API_BASE_URL}`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -19,23 +21,22 @@ export const useProductStore = create((set) => ({
 		return { success: true, message: "Product created successfully" };
 	},
 	fetchProducts: async () => {
-		const res = await fetch("/api/products");
+		const res = await fetch(`${API_BASE_URL}`);
 		const data = await res.json();
 		set({ products: data.data });
 	},
 	deleteProduct: async (pid) => {
-		const res = await fetch(`/api/products/${pid}`, {
+		const res = await fetch(`${API_BASE_URL}/${pid}`, {
 			method: "DELETE",
 		});
 		const data = await res.json();
 		if (!data.success) return { success: false, message: data.message };
 
-		// update the ui immediately, without needing a refresh
 		set((state) => ({ products: state.products.filter((product) => product._id !== pid) }));
 		return { success: true, message: data.message };
 	},
 	updateProduct: async (pid, updatedProduct) => {
-		const res = await fetch(`/api/products/${pid}`, {
+		const res = await fetch(`${API_BASE_URL}/${pid}`, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
@@ -45,7 +46,6 @@ export const useProductStore = create((set) => ({
 		const data = await res.json();
 		if (!data.success) return { success: false, message: data.message };
 
-		// update the ui immediately, without needing a refresh
 		set((state) => ({
 			products: state.products.map((product) => (product._id === pid ? data.data : product)),
 		}));
